@@ -15,7 +15,7 @@ public class SensorReading {
     private Long id;
 
     // ID of sensor which has scanned.
-    private String sensorId;
+    private Long sensorId;
 
     // Time in which scan is submitted
     private LocalDateTime timestamp;
@@ -48,7 +48,7 @@ public class SensorReading {
         return temperature;
     }
 
-    public String getSensorId() {
+    public Long getSensorId() {
         return sensorId;
     }
 
@@ -79,7 +79,7 @@ public class SensorReading {
         this.timestamp = timestamp;
     }
 
-    public void setSensorId(String sensorId) {
+    public void setSensorId(Long sensorId) {
         this.sensorId = sensorId;
     }
 }
