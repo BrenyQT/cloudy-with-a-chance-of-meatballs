@@ -7,6 +7,7 @@ import java.time.LocalDateTime;
 @Table(name = "sensor_readings")
 public class SensorReading {
 
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
 
