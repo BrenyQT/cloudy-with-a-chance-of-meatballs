@@ -13,6 +13,8 @@ public interface SensorReadingRepository extends JpaRepository<SensorReading, Lo
 
     List<SensorReading> findBySensorId(Long sensorId);
 
+    List<SensorReading> findBySensorIdAndTimestampBetween(Long sensorId, LocalDateTime startDate, LocalDateTime endDate);
+
 
 }
 
