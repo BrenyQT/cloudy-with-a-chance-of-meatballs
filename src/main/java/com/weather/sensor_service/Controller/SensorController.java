@@ -33,8 +33,6 @@ public class SensorController {
         try {
             reading.setTimestamp(LocalDateTime.now());
             return service.saveReading(reading);
-        } catch (Exception e) {
-            throw new RuntimeException("Failed to save reading.");
         } finally {
             lock.unlock();
         }
@@ -67,8 +65,8 @@ public class SensorController {
     // Retrieves a specific sensor record between 2 time points
     @GetMapping("/get-time-period")
     public List<SensorReading> getTimePeriod(@RequestParam("sensorId") Long sensorId,
-                                             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startDate,
-                                             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endDate) {
+                                             @RequestParam (required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startDate,
+                                             @RequestParam (required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endDate) {
         return service.getSensorDataBetweenTimePeriod(sensorId,startDate,endDate);
     }
 
@@ -78,8 +76,8 @@ public class SensorController {
                                                        @RequestParam(defaultValue = "false") boolean temperature,
                                                        @RequestParam(defaultValue = "false") boolean humidity,
                                                        @RequestParam(defaultValue = "false") boolean wind,
-                                                       @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startDate,
-                                                       @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endDate) {
+                                                       @RequestParam (required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startDate,
+                                                       @RequestParam (required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endDate) {
         return service.getSpecificSensorMetricsBetweenTimePeriod(sensorId,temperature, humidity, wind, startDate,endDate);
     }
 
