@@ -29,6 +29,18 @@ public class SensorReading {
     // WindSpeed amount
     private Double windSpeed;
 
+    public SensorReading() {
+
+    }
+
+    public SensorReading(Long id, Long sensorId, Double temperature, Double humidity, Double windSpeed, LocalDateTime timestamp) {
+        this.id = id;
+        this.sensorId = sensorId;
+        this.temperature = temperature;
+        this.humidity = humidity;
+        this.windSpeed = windSpeed;
+        this.timestamp = timestamp;
+    }
 
     // GETTERS
 
