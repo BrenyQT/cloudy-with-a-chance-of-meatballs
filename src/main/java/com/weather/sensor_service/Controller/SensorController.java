@@ -1,6 +1,6 @@
 package com.weather.sensor_service.Controller;
 
-import com.weather.sensor_service.DTO.SensorDTO;
+import com.weather.sensor_service.DTO.SensorAggregationResponseDTO;
 import com.weather.sensor_service.Entity.SensorReading;
 import com.weather.sensor_service.Services.SensorService;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -26,7 +26,7 @@ public class SensorController {
     }
 
     // Create a new sensor record
-    //Lock used to ensure data integrity
+    // Lock used to ensure data integrity
     @PostMapping("/create-reading")
     public SensorReading createReading(@RequestBody SensorReading reading) {
         lock.lock();
@@ -55,7 +55,7 @@ public class SensorController {
 
     // Retrieves Sensor Metrics
     @GetMapping("/get-metrics")
-    public List<SensorDTO> getMetrics(
+    public List<SensorReading> getMetrics(
             @RequestParam Long sensorId,
             @RequestParam(defaultValue = "false") boolean temperature,
             @RequestParam(defaultValue = "false") boolean humidity,
@@ -66,8 +66,32 @@ public class SensorController {
 
     // Retrieves a specific sensor record between 2 time points
     @GetMapping("/get-time-period")
-    public List<SensorReading> getTimePeriod(@RequestParam("sensorId") Long sensorId, @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startDate,
+    public List<SensorReading> getTimePeriod(@RequestParam("sensorId") Long sensorId,
+                                             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startDate,
                                              @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endDate) {
         return service.getSensorDataBetweenTimePeriod(sensorId,startDate,endDate);
+    }
+
+    // Retrieves a specific sensor record between 2 time points
+    @GetMapping("/get-metrics-and-time-period")
+    public List<SensorReading> getMetricsAndTimePeriod(@RequestParam("sensorId") Long sensorId,
+                                                       @RequestParam(defaultValue = "false") boolean temperature,
+                                                       @RequestParam(defaultValue = "false") boolean humidity,
+                                                       @RequestParam(defaultValue = "false") boolean wind,
+                                                       @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startDate,
+                                                       @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endDate) {
+        return service.getSpecificSensorMetricsBetweenTimePeriod(sensorId,temperature, humidity, wind, startDate,endDate);
+    }
+
+    @GetMapping("/get-metrics-and-time-period-with-constraint")
+    public SensorAggregationResponseDTO getMetricsAndTimePeriodWithStatistic(@RequestParam("sensorId") Long sensorId,
+                                                                                    @RequestParam (required = false, defaultValue = "false") boolean temperature,
+                                                                                    @RequestParam (required = false, defaultValue = "false") boolean humidity,
+                                                                                    @RequestParam (required = false, defaultValue = "false") boolean wind,
+                                                                                    @RequestParam (required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startDate,
+                                                                                    @RequestParam (required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endDate,
+                                                                                    @RequestParam (defaultValue = "avg") String statistic) {
+
+        return service.getMetricsAndTimePeriodWithConstraintAndStatistic(sensorId,temperature, humidity, wind, startDate,endDate, statistic);
     }
 }
