@@ -57,8 +57,14 @@ The service offers many features :
 # Endpoints 
 ## /sensors/create-reading/
 - Stores a new sensor reading to database
+  
+Happy Path 
   <img width="1383" height="873" alt="image" src="https://github.com/user-attachments/assets/7d0cab2c-9efd-4356-9bd7-ef10cf7eb544" />
+  
+No sensorId provided
   <img width="1390" height="878" alt="image" src="https://github.com/user-attachments/assets/b89baba2-5650-4959-8c12-a03367be1329" />
+  
+Missing a metric
   <img width="1390" height="878" alt="image" src="https://github.com/user-attachments/assets/f3c66bca-17f2-4cc1-8880-c4db3d3eb3cd" />
 
 
