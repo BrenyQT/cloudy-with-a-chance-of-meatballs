@@ -19,7 +19,7 @@ The service offers many features :
   - UUID, sensorId, timestamp, temperature, humidty, windSpeed.
  
   ## SensorAggregationResponseDTO
-  - Request object for "/get-metrics-and-time-period-with-constraint"
+  - Request object for "sensors/get-metrics-and-time-period-with-constraint"
  
   ## SensorExceptions
   - Custom exceptions for common errors which could occour.
@@ -42,8 +42,8 @@ The service offers many features :
   - Gradle : Dependancy Manager. 
   - PostgreSQL : Service Database.
   - H2 : in memory database for unit tests.
-  - Spring boot JPA - Spring boot ORM.
-  - Spring boot WEB - allows me to create RESTful API's
+  - Spring boot JPA : Spring boot ORM.
+  - Spring boot WEB : allows me to create RESTful API's
    
 # Testing
 
