@@ -1,4 +1,4 @@
-# Overview 
+<img width="1387" height="877" alt="image" src="https://github.com/user-attachments/assets/aaa814a7-fa91-4286-8b8f-cda970df0a87" /># Overview 
 
 This is a service which recieves weather data from various sensors which report metrics such as temperature, humidity and windspeed. 
 
@@ -56,16 +56,27 @@ The service offers many features :
 
 # Endpoints 
 ## /sensors/create-reading/
-- Stores a new sensor reading to database
+- Stores a new sensor reading to database.
   
-Happy Path 
+Happy Path. 
   <img width="1383" height="873" alt="image" src="https://github.com/user-attachments/assets/7d0cab2c-9efd-4356-9bd7-ef10cf7eb544" />
   
-No sensorId provided
+No sensorId provided.
   <img width="1390" height="878" alt="image" src="https://github.com/user-attachments/assets/b89baba2-5650-4959-8c12-a03367be1329" />
   
-Missing a metric
+Missing a metric.
   <img width="1390" height="878" alt="image" src="https://github.com/user-attachments/assets/f3c66bca-17f2-4cc1-8880-c4db3d3eb3cd" />
+
+## /sensors/get-all/
+- Returns all readings in the database.
+
+Happy Path.
+<img width="1381" height="879" alt="image" src="https://github.com/user-attachments/assets/ab2ca8c7-3dbe-4371-804d-5aecf3912821" />
+
+No Records in database.
+<img width="1387" height="877" alt="image" src="https://github.com/user-attachments/assets/0c9fe69f-de91-499b-b718-1ca3d31f9c90" />
+
+
 
 
 
