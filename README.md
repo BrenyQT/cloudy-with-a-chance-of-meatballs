@@ -55,6 +55,8 @@ The service offers many features :
 - Enpoint testing to check Happy Path and exception bubbling. 
 
 # Endpoints 
+(Notice exception bubling on failing requests)
+
 ## sensors/create-reading/
 - Stores a new sensor reading to database.
   
