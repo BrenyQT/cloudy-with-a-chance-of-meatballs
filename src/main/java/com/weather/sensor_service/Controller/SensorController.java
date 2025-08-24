@@ -15,12 +15,13 @@ import java.util.List;
 @RequestMapping("/sensors")
 public class SensorController {
 
+    // Endpoint can access service level
     private final SensorService service;
 
     // Used for creating records to ensure database integrity
     private final ReentrantLock lock = new ReentrantLock();
 
-
+    // Constructor
     public SensorController(SensorService service) {
         this.service = service;
     }
@@ -45,44 +46,25 @@ public class SensorController {
     }
 
 
-    // Retrieves all readings for a particular sensor ID
-    @GetMapping("/get-reading")
-    public List<SensorReading> getReading(@RequestParam("sensorId") Long sensorId) {
-        return  service.getAllReadingsForaSensorId(sensorId);
-    }
-
-    // Retrieves Sensor Metrics
-    @GetMapping("/get-metrics")
-    public List<SensorReading> getMetrics(
-            @RequestParam Long sensorId,
-            @RequestParam(defaultValue = "false") boolean temperature,
-            @RequestParam(defaultValue = "false") boolean humidity,
-            @RequestParam(defaultValue = "false") boolean wind
-    ) {
-        return service.getMetricsForSensor(sensorId, temperature, humidity, wind);
-    }
-
     // Retrieves a specific sensor record between 2 time points
-    @GetMapping("/get-time-period")
-    public List<SensorReading> getTimePeriod(@RequestParam("sensorId") Long sensorId,
-                                             @RequestParam (required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startDate,
-                                             @RequestParam (required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endDate) {
-        return service.getSensorDataBetweenTimePeriod(sensorId,startDate,endDate);
-    }
-
-    // Retrieves a specific sensor record between 2 time points
+    // Metrics can be dynamically requested
+    // Time defaults to all time if no range given
     @GetMapping("/get-metrics-and-time-period")
     public List<SensorReading> getMetricsAndTimePeriod(@RequestParam("sensorId") Long sensorId,
-                                                       @RequestParam(defaultValue = "false") boolean temperature,
-                                                       @RequestParam(defaultValue = "false") boolean humidity,
-                                                       @RequestParam(defaultValue = "false") boolean wind,
+                                                       @RequestParam (required = false, defaultValue = "false") boolean temperature,
+                                                       @RequestParam (required = false, defaultValue = "false") boolean humidity,
+                                                       @RequestParam (required = false, defaultValue = "false") boolean wind,
                                                        @RequestParam (required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startDate,
                                                        @RequestParam (required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endDate) {
         return service.getSpecificSensorMetricsBetweenTimePeriod(sensorId,temperature, humidity, wind, startDate,endDate);
     }
 
+    // Returns statistics for a list of readings and their metrics between 2 time points
+    // Statistic defaults to AVG (AVG, MAX, MIN, SUM)
+    // Metrics can be dynamically requested
+    // Time defaults to all time if no range given
     @GetMapping("/get-metrics-and-time-period-with-constraint")
-    public SensorAggregationResponseDTO getMetricsAndTimePeriodWithStatistic(@RequestParam("sensorId") Long sensorId,
+    public List<SensorAggregationResponseDTO> getMetricsAndTimePeriodWithStatistic(@RequestParam("sensorIds") List<Long> sensorIds,
                                                                                     @RequestParam (required = false, defaultValue = "false") boolean temperature,
                                                                                     @RequestParam (required = false, defaultValue = "false") boolean humidity,
                                                                                     @RequestParam (required = false, defaultValue = "false") boolean wind,
@@ -90,6 +72,6 @@ public class SensorController {
                                                                                     @RequestParam (required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endDate,
                                                                                     @RequestParam (defaultValue = "avg") String statistic) {
 
-        return service.getMetricsAndTimePeriodWithConstraintAndStatistic(sensorId,temperature, humidity, wind, startDate,endDate, statistic);
+        return service.getMetricsAndTimePeriodWithConstraintAndStatistic(sensorIds,temperature, humidity, wind, startDate,endDate, statistic);
     }
 }

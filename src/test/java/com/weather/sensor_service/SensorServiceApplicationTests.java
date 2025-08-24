@@ -33,7 +33,7 @@ class SensorServiceApplicationTests {
         MockitoAnnotations.openMocks(this);
     }
 
-    // *** 1. saveReading(SensorReading reading) TESTS ***
+    // ***  saveReading(SensorReading reading) TESTS ***
 
     // Throws SensorSaveException if sensorId is null.
     @Test
@@ -114,7 +114,7 @@ class SensorServiceApplicationTests {
     }
 
 
-    // *** 2. getAllReadings() TESTS ***
+    // ***  getAllReadings() TESTS ***
 
     // Throws exception when no data is present
     @Test
@@ -144,7 +144,7 @@ class SensorServiceApplicationTests {
     }
 
 
-    // *** 3. getAllReadingsForaSensorId(Long sensorId) TESTS ***
+    // ***  getAllReadingsForaSensorId(Long sensorId) TESTS ***
 
     // Throws an error when empty list returned
     @Test
@@ -156,183 +156,7 @@ class SensorServiceApplicationTests {
         });
     }
 
-    // HAPPY PATH - returns all readings for a sensorId
-    @Test
-    void getReadingWithSensorIdReturnsData() {
-        SensorReading reading = new SensorReading();
-        reading.setSensorId(11L);
-        reading.setTemperature(20.0);
-        reading.setHumidity(60.0);
-        reading.setWindSpeed(5.0);
-        reading.setTimestamp(LocalDateTime.now());
-
-        when(repository.findBySensorId(1L)).thenReturn(List.of(reading));
-
-        List<SensorReading> result = service.getAllReadingsForaSensorId(1L);
-
-        assertNotNull(result);
-        assertEquals(1, result.size());
-
-        verify(repository, times(1)).findBySensorId(1L);
-    }
-
-
-    // *** 4. getMetricsForSensor(Long sensorId, boolean temperature, boolean humidity, boolean wind) TESTS ***
-
-    // Throws exception if sensorId has no records
-    @Test
-    void getReadingThrowsWhenSensorIdIsNotFound() {
-        when(repository.findBySensorId(1L)).thenReturn(Collections.emptyList());
-
-        assertThrows(SensorExceptions.SensorNotFoundException.class,
-                () -> service.getMetricsForSensor(1L, true, true, true));
-
-        verify(repository, times(1)).findBySensorId(1L);
-    }
-
-    // returns a list when only temperature = true
-    @Test
-    void getReadingUsingIdAndTemperature() {
-        SensorReading reading = new SensorReading(1L, 1L, 25.0, 55.0, 7.0, LocalDateTime.now());
-        when(repository.findBySensorId(1L)).thenReturn(List.of(reading));
-
-        List<SensorReading> result = service.getMetricsForSensor(1L, true, false, false);
-
-        assertEquals(1, result.size());
-        assertEquals(25.0, result.get(0).getTemperature());
-        assertNull(result.get(0).getHumidity());
-        assertNull(result.get(0).getWindSpeed());
-    }
-
-    // returns a list when only humidity = true
-    @Test
-    void getReadingUsingIdAndHumidity() {
-        SensorReading reading = new SensorReading(1L, 1L, 25.0, 55.0, 7.0, LocalDateTime.now());
-        when(repository.findBySensorId(1L)).thenReturn(List.of(reading));
-
-        List<SensorReading> result = service.getMetricsForSensor(1L, false, true, false);
-
-        assertEquals(1, result.size());
-        assertNull(result.get(0).getTemperature());
-        assertEquals(55.0, result.get(0).getHumidity());
-        assertNull(result.get(0).getWindSpeed());
-    }
-
-    // returns a list when only wind = true
-    @Test
-    void getReadingUsingIdAndWind() {
-        SensorReading reading = new SensorReading(1L, 1L, 25.0, 55.0, 7.0, LocalDateTime.now());
-        when(repository.findBySensorId(1L)).thenReturn(List.of(reading));
-
-        List<SensorReading> result = service.getMetricsForSensor(1L, false, false, true);
-
-        assertEquals(1, result.size());
-        assertNull(result.get(0).getTemperature());
-        assertNull(result.get(0).getHumidity());
-        assertEquals(7.0, result.get(0).getWindSpeed());
-    }
-
-    // returns no metric fields when all three = false
-    @Test
-    void allFlagsFalse() {
-        SensorReading reading = new SensorReading(1L, 1L, 25.0, 55.0, 7.0, LocalDateTime.now());
-        when(repository.findBySensorId(1L)).thenReturn(List.of(reading));
-
-        List<SensorReading> result = service.getMetricsForSensor(1L, false, false, false);
-
-        assertEquals(1, result.size());
-        assertNull(result.get(0).getTemperature());
-        assertNull(result.get(0).getHumidity());
-        assertNull(result.get(0).getWindSpeed());
-    }
-
-    // HAPPY PATH - Returns all readings with all metrics for a sensorId
-    @Test
-    void allFLagsTrue() {
-        SensorReading reading = new SensorReading(1L, 1L, 25.0, 55.0, 7.0, LocalDateTime.now());
-        when(repository.findBySensorId(1L)).thenReturn(List.of(reading));
-
-        List<SensorReading> result = service.getMetricsForSensor(1L, true, true, true);
-
-        assertEquals(1, result.size());
-        assertEquals(25.0, result.get(0).getTemperature());
-        assertEquals(55.0, result.get(0).getHumidity());
-        assertEquals(7.0, result.get(0).getWindSpeed());
-    }
-
-    // *** 5. getSensorDataBetweenTimePeriod(Long sensorId, LocalDateTime startDate, LocalDateTime endDate) TESTS ***
-
-    // start date is null
-    @Test
-    void nullStartDate() {
-        LocalDateTime end = LocalDateTime.now();
-        SensorReading reading = new SensorReading(1L, 1L, 25.0, 50.0, 5.0, LocalDateTime.now());
-        when(repository.findBySensorIdAndTimestampBetween(eq(1L), any(LocalDateTime.class), eq(end)))
-                .thenReturn(Collections.singletonList(reading));
-
-        List<SensorReading> result = service.getSensorDataBetweenTimePeriod(1L, null, end);
-
-        assertFalse(result.isEmpty());
-        verify(repository).findBySensorIdAndTimestampBetween(eq(1L),
-                eq(LocalDateTime.of(1970, 1, 1, 0, 0)), eq(end));
-    }
-
-    // end date is null
-    @Test
-    void nullEndDate() {
-        LocalDateTime start = LocalDateTime.of(2025, 1, 1, 0, 0);
-        SensorReading reading = new SensorReading(1L, 1L, 25.0, 50.0, 5.0, LocalDateTime.now());
-        when(repository.findBySensorIdAndTimestampBetween(eq(1L), eq(start), any(LocalDateTime.class)))
-                .thenReturn(Collections.singletonList(reading));
-
-        List<SensorReading> result = service.getSensorDataBetweenTimePeriod(1L, start, null);
-
-        assertFalse(result.isEmpty());
-        verify(repository).findBySensorIdAndTimestampBetween(eq(1L),
-                eq(start), any(LocalDateTime.class));
-    }
-
-    // end date is before start date
-    @Test
-    void EndDateBeforeStartDate() {
-        LocalDateTime start = LocalDateTime.now();
-        LocalDateTime end = start.minusDays(1);
-
-        assertThrows(SensorExceptions.MetricCalculationException.class,
-                () -> service.getSensorDataBetweenTimePeriod(1L, start, end));
-    }
-
-    // no readings found between startDate and endDate
-    @Test
-    void NoReadingsFound() {
-        LocalDateTime start = LocalDateTime.of(2025, 1, 1, 0, 0);
-        LocalDateTime end = LocalDateTime.of(2025, 1, 2, 0, 0);
-
-        when(repository.findBySensorIdAndTimestampBetween(1L, start, end))
-                .thenReturn(Collections.emptyList());
-
-        assertThrows(SensorExceptions.SensorNotFoundException.class,
-                () -> service.getSensorDataBetweenTimePeriod(1L, start, end));
-    }
-
-    // HAPPY PATH - Returns found readings
-    @Test
-    void returnsReadings() {
-        LocalDateTime start = LocalDateTime.of(2025, 1, 1, 0, 0);
-        LocalDateTime end = LocalDateTime.of(2025, 1, 2, 0, 0);
-        SensorReading reading = new SensorReading(1L, 1L, 25.0, 50.0, 5.0, LocalDateTime.now());
-
-        when(repository.findBySensorIdAndTimestampBetween(1L, start, end))
-                .thenReturn(Collections.singletonList(reading));
-
-        List<SensorReading> result = service.getSensorDataBetweenTimePeriod(1L, start, end);
-
-        assertEquals(1, result.size());
-        assertEquals(reading, result.get(0));
-    }
-
-
-    // *** 6. getSpecificSensorMetricsBetweenTimePeriod(Long sensorId,boolean temperature, boolean humidity, boolean wind, LocalDateTime startDate, LocalDateTime endDate) TESTS ***
+    // ***  getSpecificSensorMetricsBetweenTimePeriod(Long sensorId,boolean temperature, boolean humidity, boolean wind, LocalDateTime startDate, LocalDateTime endDate) TESTS ***
 
     // HAPPY PATH - metrics are retuened between time
     @Test
@@ -376,10 +200,9 @@ class SensorServiceApplicationTests {
     }
 
 
+    // *** getSpecificMetrics(List<SensorReading> readings, boolean temperature, boolean humidity, boolean wind) TESTS ***
 
-	// *** 7. getSpecificMetrics(List<SensorReading> readings, boolean temperature, boolean humidity, boolean wind) TESTS ***
-
-	// Readings is null
+    // Readings is null
     @Test
     void ReadingsNull() {
         assertThrows(SensorExceptions.SensorNotFoundException.class,
@@ -457,7 +280,7 @@ class SensorServiceApplicationTests {
                 () -> service.getSpecificMetrics(input, true, false, false));
     }
 
-    // *** 8. getMetricsAndTimePeriodWithConstraintAndStatistic(Long sensorId,boolean temperature,boolean humidity,boolean wind,LocalDateTime startDate,LocalDateTime endDate, String statistic TESTS ***
+// *** getMetricsAndTimePeriodWithConstraintAndStatistic(List<Long> sensorIds, boolean temperature, boolean humidity, boolean wind, LocalDateTime startDate, LocalDateTime endDate, String statistic TESTS ***
 
     // returns min statistic
     @Test
@@ -465,16 +288,17 @@ class SensorServiceApplicationTests {
         LocalDateTime now = LocalDateTime.now();
         SensorReading r1 = new SensorReading(1L, 11L, 10.0, 20.0, 5.0, now);
         SensorReading r2 = new SensorReading(2L, 11L, 30.0, 40.0, 1.0, now);
-        when(repository.findBySensorIdAndTimestampBetween(anyLong(), any(), any())).thenReturn(Arrays.asList(r1, r2));
+        when(repository.findBySensorIdAndTimestampBetween(eq(11L), any(), any())).thenReturn(Arrays.asList(r1, r2));
 
-        SensorAggregationResponseDTO dto = service.getMetricsAndTimePeriodWithConstraintAndStatistic(
-                11L, true, true, true, now.minusDays(1), now, "min");
+        List<SensorAggregationResponseDTO> dtos = service.getMetricsAndTimePeriodWithConstraintAndStatistic(
+                Arrays.asList(11L), true, true, true, now.minusDays(1), now, "min");
+
+        SensorAggregationResponseDTO dto = dtos.get(0);
 
         assertEquals(10.0, dto.getTemperatureMetric());
         assertEquals(20.0, dto.getHumidityMetric());
         assertEquals(1.0, dto.getWindSpeedMetric());
     }
-
 
     // returns max statistic
     @Test
@@ -482,10 +306,12 @@ class SensorServiceApplicationTests {
         LocalDateTime now = LocalDateTime.now();
         SensorReading r1 = new SensorReading(1L, 11L, 10.0, 20.0, 5.0, now);
         SensorReading r2 = new SensorReading(2L, 11L, 30.0, 40.0, 1.0, now);
-        when(repository.findBySensorIdAndTimestampBetween(anyLong(), any(), any())).thenReturn(Arrays.asList(r1, r2));
+        when(repository.findBySensorIdAndTimestampBetween(eq(11L), any(), any())).thenReturn(Arrays.asList(r1, r2));
 
-        SensorAggregationResponseDTO dto = service.getMetricsAndTimePeriodWithConstraintAndStatistic(
-                11L, true, true, true, now.minusDays(1), now, "max");
+        List<SensorAggregationResponseDTO> dtos = service.getMetricsAndTimePeriodWithConstraintAndStatistic(
+                Arrays.asList(11L), true, true, true, now.minusDays(1), now, "max");
+
+        SensorAggregationResponseDTO dto = dtos.get(0);
 
         assertEquals(30.0, dto.getTemperatureMetric());
         assertEquals(40.0, dto.getHumidityMetric());
@@ -498,10 +324,12 @@ class SensorServiceApplicationTests {
         LocalDateTime now = LocalDateTime.now();
         SensorReading r1 = new SensorReading(1L, 11L, 10.0, 20.0, 5.0, now);
         SensorReading r2 = new SensorReading(2L, 11L, 30.0, 40.0, 15.0, now);
-        when(repository.findBySensorIdAndTimestampBetween(anyLong(), any(), any())).thenReturn(Arrays.asList(r1, r2));
+        when(repository.findBySensorIdAndTimestampBetween(eq(11L), any(), any())).thenReturn(Arrays.asList(r1, r2));
 
-        SensorAggregationResponseDTO dto = service.getMetricsAndTimePeriodWithConstraintAndStatistic(
-                11L, true, true, true, now.minusDays(1), now, "sum");
+        List<SensorAggregationResponseDTO> dtos = service.getMetricsAndTimePeriodWithConstraintAndStatistic(
+                Arrays.asList(11L), true, true, true, now.minusDays(1), now, "sum");
+
+        SensorAggregationResponseDTO dto = dtos.get(0);
 
         assertEquals(40.0, dto.getTemperatureMetric());
         assertEquals(60.0, dto.getHumidityMetric());
@@ -514,10 +342,12 @@ class SensorServiceApplicationTests {
         LocalDateTime now = LocalDateTime.now();
         SensorReading r1 = new SensorReading(1L, 11L, 10.0, 20.0, 5.0, now);
         SensorReading r2 = new SensorReading(2L, 11L, 30.0, 40.0, 15.0, now);
-        when(repository.findBySensorIdAndTimestampBetween(anyLong(), any(), any())).thenReturn(Arrays.asList(r1, r2));
+        when(repository.findBySensorIdAndTimestampBetween(eq(11L), any(), any())).thenReturn(Arrays.asList(r1, r2));
 
-        SensorAggregationResponseDTO dto = service.getMetricsAndTimePeriodWithConstraintAndStatistic(
-                11L, true, true, true, now.minusDays(1), now, "avg");
+        List<SensorAggregationResponseDTO> dtos = service.getMetricsAndTimePeriodWithConstraintAndStatistic(
+                Arrays.asList(11L), true, true, true, now.minusDays(1), now, "avg");
+
+        SensorAggregationResponseDTO dto = dtos.get(0);
 
         assertEquals(20.0, dto.getTemperatureMetric());
         assertEquals(30.0, dto.getHumidityMetric());
@@ -529,10 +359,10 @@ class SensorServiceApplicationTests {
     void InvalidStatistic() {
         LocalDateTime now = LocalDateTime.now();
         SensorReading r1 = new SensorReading(1L, 11L, 10.0, 20.0, 5.0, now);
-        when(repository.findBySensorIdAndTimestampBetween(anyLong(), any(), any())).thenReturn(Collections.singletonList(r1));
+        when(repository.findBySensorIdAndTimestampBetween(eq(11L), any(), any())).thenReturn(Collections.singletonList(r1));
 
         assertThrows(SensorExceptions.MetricCalculationException.class,
-                () -> service.getMetricsAndTimePeriodWithConstraintAndStatistic(11L, true, true, true, now.minusDays(1), now, "invalid"));
+                () -> service.getMetricsAndTimePeriodWithConstraintAndStatistic(Arrays.asList(11L), true, true, true, now.minusDays(1), now, "invalid"));
     }
 
     // invalid statistics data
@@ -540,10 +370,10 @@ class SensorServiceApplicationTests {
     void MetricListIsBad() {
         LocalDateTime now = LocalDateTime.now();
         SensorReading r1 = new SensorReading(1L, 11L, null, null, null, now);
-        when(repository.findBySensorIdAndTimestampBetween(anyLong(), any(), any())).thenReturn(Collections.singletonList(r1));
+        when(repository.findBySensorIdAndTimestampBetween(eq(11L), any(), any())).thenReturn(Collections.singletonList(r1));
 
         assertThrows(SensorExceptions.MetricCalculationException.class,
-                () -> service.getMetricsAndTimePeriodWithConstraintAndStatistic(11L, true, true, true, now.minusDays(1), now, "avg"));
+                () -> service.getMetricsAndTimePeriodWithConstraintAndStatistic(Arrays.asList(11L), true, true, true, now.minusDays(1), now, "avg"));
     }
 
     // only temperature flag
@@ -551,9 +381,10 @@ class SensorServiceApplicationTests {
     void returnsOnlyTemperatureFlag() {
         LocalDateTime now = LocalDateTime.now();
         SensorReading r1 = new SensorReading(1L, 11L, 10.0, 20.0, 5.0, now);
-        when(repository.findBySensorIdAndTimestampBetween(anyLong(), any(), any())).thenReturn(Collections.singletonList(r1));
+        when(repository.findBySensorIdAndTimestampBetween(eq(11L), any(), any())).thenReturn(Collections.singletonList(r1));
 
-        SensorAggregationResponseDTO dto = service.getMetricsAndTimePeriodWithConstraintAndStatistic(11L, true, false, false, now.minusDays(1), now, "avg");
+        List<SensorAggregationResponseDTO> dtos = service.getMetricsAndTimePeriodWithConstraintAndStatistic(Arrays.asList(11L), true, false, false, now.minusDays(1), now, "avg");
+        SensorAggregationResponseDTO dto = dtos.get(0);
 
         assertNotNull(dto.getTemperatureMetric());
         assertNull(dto.getHumidityMetric());
@@ -565,9 +396,10 @@ class SensorServiceApplicationTests {
     void returnsOnlyHumidityFlag() {
         LocalDateTime now = LocalDateTime.now();
         SensorReading r1 = new SensorReading(1L, 11L, 10.0, 20.0, 5.0, now);
-        when(repository.findBySensorIdAndTimestampBetween(anyLong(), any(), any())).thenReturn(Collections.singletonList(r1));
+        when(repository.findBySensorIdAndTimestampBetween(eq(11L), any(), any())).thenReturn(Collections.singletonList(r1));
 
-        SensorAggregationResponseDTO dto = service.getMetricsAndTimePeriodWithConstraintAndStatistic(11L, false, true, false, now.minusDays(1), now, "avg");
+        List<SensorAggregationResponseDTO> dtos = service.getMetricsAndTimePeriodWithConstraintAndStatistic(Arrays.asList(11L), false, true, false, now.minusDays(1), now, "avg");
+        SensorAggregationResponseDTO dto = dtos.get(0);
 
         assertNull(dto.getTemperatureMetric());
         assertNotNull(dto.getHumidityMetric());
@@ -579,9 +411,10 @@ class SensorServiceApplicationTests {
     void returnsOnlyWindFlag() {
         LocalDateTime now = LocalDateTime.now();
         SensorReading r1 = new SensorReading(1L, 11L, 10.0, 20.0, 5.0, now);
-        when(repository.findBySensorIdAndTimestampBetween(anyLong(), any(), any())).thenReturn(Collections.singletonList(r1));
+        when(repository.findBySensorIdAndTimestampBetween(eq(11L), any(), any())).thenReturn(Collections.singletonList(r1));
 
-        SensorAggregationResponseDTO dto = service.getMetricsAndTimePeriodWithConstraintAndStatistic(11L, false, false, true, now.minusDays(1), now, "avg");
+        List<SensorAggregationResponseDTO> dtos = service.getMetricsAndTimePeriodWithConstraintAndStatistic(Arrays.asList(11L), false, false, true, now.minusDays(1), now, "avg");
+        SensorAggregationResponseDTO dto = dtos.get(0);
 
         assertNull(dto.getTemperatureMetric());
         assertNull(dto.getHumidityMetric());
@@ -593,9 +426,10 @@ class SensorServiceApplicationTests {
     void returnsMultipleMetricsWhenMultipleFlagsTrue() {
         LocalDateTime now = LocalDateTime.now();
         SensorReading r1 = new SensorReading(1L, 11L, 10.0, 20.0, 5.0, now);
-        when(repository.findBySensorIdAndTimestampBetween(anyLong(), any(), any())).thenReturn(Collections.singletonList(r1));
+        when(repository.findBySensorIdAndTimestampBetween(eq(11L), any(), any())).thenReturn(Collections.singletonList(r1));
 
-        SensorAggregationResponseDTO dto = service.getMetricsAndTimePeriodWithConstraintAndStatistic(11L, true, true, false, now.minusDays(1), now, "avg");
+        List<SensorAggregationResponseDTO> dtos = service.getMetricsAndTimePeriodWithConstraintAndStatistic(Arrays.asList(11L), true, true, false, now.minusDays(1), now, "avg");
+        SensorAggregationResponseDTO dto = dtos.get(0);
 
         assertNotNull(dto.getTemperatureMetric());
         assertNotNull(dto.getHumidityMetric());
@@ -607,34 +441,38 @@ class SensorServiceApplicationTests {
     void setsUnusedMetricsToNull() {
         LocalDateTime now = LocalDateTime.now();
         SensorReading r1 = new SensorReading(1L, 11L, 10.0, 20.0, 5.0, now);
-        when(repository.findBySensorIdAndTimestampBetween(anyLong(), any(), any())).thenReturn(Collections.singletonList(r1));
+        when(repository.findBySensorIdAndTimestampBetween(eq(11L), any(), any())).thenReturn(Collections.singletonList(r1));
 
-        SensorAggregationResponseDTO dto = service.getMetricsAndTimePeriodWithConstraintAndStatistic(11L, true, false, false, now.minusDays(1), now, "avg");
+        List<SensorAggregationResponseDTO> dtos = service.getMetricsAndTimePeriodWithConstraintAndStatistic(Arrays.asList(11L), true, false, false, now.minusDays(1), now, "avg");
+        SensorAggregationResponseDTO dto = dtos.get(0);
+
         assertNotNull(dto.getTemperatureMetric());
         assertNull(dto.getHumidityMetric());
         assertNull(dto.getWindSpeedMetric());
-
     }
 
-    // sets null date to all dates
+    // multiple sensors
     @Test
-    void nullStartDateTo1970() {
-        SensorReading reading = new SensorReading(1L, 11L, 20.0, 50.0, 5.0, LocalDateTime.now());
-        when(repository.findBySensorIdAndTimestampBetween(eq(11L), any(), any())).thenReturn(Collections.singletonList(reading));
+    void getMetricsAndTimePeriodHandlesMultipleSensorIds() {
+        LocalDateTime now = LocalDateTime.now();
+        SensorReading r1 = new SensorReading(1L, 11L, 10.0, 20.0, 5.0, now);
+        SensorReading r2 = new SensorReading(2L, 12L, 30.0, 40.0, 15.0, now);
 
-        assertDoesNotThrow(() -> {
-            service.getSensorDataBetweenTimePeriod(11L, null, LocalDateTime.now());
-        });
+        when(repository.findBySensorIdAndTimestampBetween(eq(11L), any(), any()))
+                .thenReturn(Collections.singletonList(r1));
+        when(repository.findBySensorIdAndTimestampBetween(eq(12L), any(), any()))
+                .thenReturn(Collections.singletonList(r2));
+
+        List<SensorAggregationResponseDTO> dtos = service.getMetricsAndTimePeriodWithConstraintAndStatistic(
+                Arrays.asList(11L, 12L), true, true, true, now.minusDays(1), now, "avg");
+
+        assertEquals(2, dtos.size());
+
+        SensorAggregationResponseDTO dto1 = dtos.stream().filter(d -> d.getSensorId() == 11L).findFirst().orElseThrow();
+        SensorAggregationResponseDTO dto2 = dtos.stream().filter(d -> d.getSensorId() == 12L).findFirst().orElseThrow();
+
+        assertEquals(10.0, dto1.getTemperatureMetric());
+        assertEquals(30.0, dto2.getTemperatureMetric());
     }
 
-    // sets null end date to now
-    @Test
-    void nullEndDateToNow() {
-        SensorReading reading = new SensorReading(1L, 11L, 20.0, 50.0, 5.0, LocalDateTime.now());
-        when(repository.findBySensorIdAndTimestampBetween(eq(11L), any(), any())).thenReturn(Collections.singletonList(reading));
-
-        assertDoesNotThrow(() -> {
-            service.getSensorDataBetweenTimePeriod(11L, LocalDateTime.now().minusDays(1), null);
-        });
-    }
 }

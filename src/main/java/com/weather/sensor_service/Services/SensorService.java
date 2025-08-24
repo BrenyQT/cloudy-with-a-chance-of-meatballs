@@ -7,6 +7,7 @@ import com.weather.sensor_service.Repository.SensorReadingRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -24,6 +25,7 @@ public class SensorService {
     // Saves a sensor reading when object hits endpoint
     public SensorReading saveReading(SensorReading reading) {
 
+        // keep the integrity of the object
         if (reading.getSensorId() == null) {
             throw new SensorExceptions.SensorSaveException("sensorId is needed to create reading ");
         }
@@ -46,10 +48,11 @@ public class SensorService {
     }
 
 
-    // Returns all records
+    // Returns all records in database
     public List<SensorReading> getAllReadings() {
         List<SensorReading> readings = repository.findAll();
 
+        // let user know that none exists
         if (readings.isEmpty()) {
             throw new SensorExceptions.SensorNotFoundException("No sensor readings in database");
         }
@@ -58,50 +61,7 @@ public class SensorService {
     }
 
 
-    // Returns all records for a sensorId
-    public List<SensorReading> getAllReadingsForaSensorId(Long sensorId) {
-        List<SensorReading> readings = repository.findBySensorId(sensorId);
-
-        if (readings.isEmpty()) {
-            throw new SensorExceptions.SensorNotFoundException("No readings found in databases for sensorId : " + sensorId);
-        }
-
-        return readings;
-    }
-
-
-    // Returns passed metrics for a specific sensor
-    public List<SensorReading> getMetricsForSensor(Long sensorId, boolean temperature, boolean humidity, boolean wind) {
-
-        List<SensorReading> readings = repository.findBySensorId(sensorId);
-
-        if (readings.isEmpty()) {
-            throw new SensorExceptions.SensorNotFoundException("No readings found in databases for sensorId : " + sensorId);
-        }
-
-        return getSpecificMetrics(readings, temperature, humidity, wind);
-    }
-
-
-    // Return records for a specific sensor between time periods
-    public List<SensorReading> getSensorDataBetweenTimePeriod(Long sensorId, LocalDateTime startDate, LocalDateTime endDate) {
-
-        LocalDateTime[] validatedDates = validateAndNormaliseDates(startDate, endDate);
-        startDate = validatedDates[0];
-        endDate = validatedDates[1];
-
-        List<SensorReading> readings = repository.findBySensorIdAndTimestampBetween(sensorId, startDate, endDate);
-
-        if (readings.isEmpty()) {
-            throw new SensorExceptions.SensorNotFoundException(
-                    "No readings found in databases for sensorId : " + sensorId + " between " + startDate + " and " + endDate);
-        }
-
-        return readings;
-    }
-
-
-    // Returns specified metrics between a time period
+    // Returns readings between a time period for a specific sensorId
     public List<SensorReading> getSpecificSensorMetricsBetweenTimePeriod(
             Long sensorId, boolean temperature, boolean humidity, boolean wind,
             LocalDateTime startDate, LocalDateTime endDate) {
@@ -120,18 +80,20 @@ public class SensorService {
         return getSpecificMetrics(timeReadings, temperature, humidity, wind);
     }
 
-
+    // isolates the metrics for getSpecificSensorMetricsBetweenTimePeriod()
     public List<SensorReading> getSpecificMetrics(List<SensorReading> readings, boolean temperature, boolean humidity, boolean wind) {
 
         if (readings == null || readings.isEmpty()) {
             throw new SensorExceptions.SensorNotFoundException("No sensor readings so cant filter metrics");
         }
-        // Create a new DTO based on the properties set as true
+
         try {
             return readings.stream()
                     .map(reading -> new SensorReading(
                             reading.getId(),
                             reading.getSensorId(),
+
+                            // if its set true get the double else set as null
                             temperature ? reading.getTemperature() : null,
                             humidity ? reading.getHumidity() : null,
                             wind ? reading.getWindSpeed() : null,
@@ -156,10 +118,10 @@ public class SensorService {
         // Turns a list fo doubles into a stream so that I can operate on it
         try {
             return switch (statistic.toLowerCase()) {
-                case "min" -> values.stream().mapToDouble(Double::doubleValue).min().orElse(Double.NaN);
-                case "max" -> values.stream().mapToDouble(Double::doubleValue).max().orElse(Double.NaN);
+                case "min" -> values.stream().mapToDouble(Double::doubleValue).min().getAsDouble();
+                case "max" -> values.stream().mapToDouble(Double::doubleValue).max().getAsDouble();
                 case "sum" -> values.stream().mapToDouble(Double::doubleValue).sum();
-                case "avg" -> values.stream().mapToDouble(Double::doubleValue).average().orElse(Double.NaN);
+                case "avg" -> values.stream().mapToDouble(Double::doubleValue).average().getAsDouble();
                 default -> throw new SensorExceptions.MetricCalculationException("Invalid statistic   : " + statistic);
             };
         } catch (Exception e) {
@@ -167,9 +129,10 @@ public class SensorService {
         }
     }
 
-
-    public SensorAggregationResponseDTO getMetricsAndTimePeriodWithConstraintAndStatistic(
-            Long sensorId,
+    // Retrieves multiple sensor readings between dates
+    // Returns a list of filtered DTOs with statistic calculations
+    public List<SensorAggregationResponseDTO> getMetricsAndTimePeriodWithConstraintAndStatistic(
+            List<Long> sensorIds,
             boolean temperature,
             boolean humidity,
             boolean wind,
@@ -177,85 +140,92 @@ public class SensorService {
             LocalDateTime endDate,
             String statistic) {
 
+        // check date integrity
         LocalDateTime[] validatedDates = validateAndNormaliseDates(startDate, endDate);
         startDate = validatedDates[0];
         endDate = validatedDates[1];
 
-        // Get readings between time ranges
-        List<SensorReading> readings = repository.findBySensorIdAndTimestampBetween(sensorId, startDate, endDate);
+        List<SensorAggregationResponseDTO> results = new ArrayList<>();
 
-        if (readings.isEmpty()) {
-            throw new SensorExceptions.SensorNotFoundException(
-                    "No readings found in databases for sensorId : " + sensorId + " between " + startDate + " and " + endDate);
+        // perform on each sensor passed in
+        for (Long sensorId : sensorIds) {
+            // Get readings between time ranges
+            List<SensorReading> readings = repository.findBySensorIdAndTimestampBetween(sensorId, startDate, endDate);
+
+            if (readings.isEmpty()) {
+                throw new SensorExceptions.SensorNotFoundException(
+                        "No readings found in databases for sensorId : " + sensorId + " between " + startDate + " and " + endDate);
+            }
+
+            // Fields to hold outputs
+            Double temperatureMetric = null;
+            Double humidityMetric = null;
+            Double windSpeedMetric = null;
+
+            // If Temperature true perform calculate function with specific statistic
+            // Creates a list of non-null double values
+            try {
+                if (temperature) {
+                    temperatureMetric = calculate(
+                            readings.stream()
+                                    .map(SensorReading::getTemperature)
+                                    .filter(Objects::nonNull)
+                                    .toList(),
+                            statistic
+                    );
+                }
+
+                // If Humidity true perform calculate function with specific statistic
+                // Creates a list of non-null double values
+                if (humidity) {
+                    humidityMetric = calculate(
+                            readings.stream()
+                                    .map(SensorReading::getHumidity)
+                                    .filter(Objects::nonNull)
+                                    .toList(),
+                            statistic
+                    );
+                }
+
+                // If Wind Speed true perform calculate function with specific statistic
+                // Creates a list of non-null double values
+                if (wind) {
+                    windSpeedMetric = calculate(
+                            readings.stream()
+                                    .map(SensorReading::getWindSpeed)
+                                    .filter(Objects::nonNull)
+                                    .toList(),
+                            statistic
+                    );
+                }
+
+            } catch (SensorExceptions.MetricCalculationException e) {
+                throw new SensorExceptions.MetricCalculationException(
+                        "Failed to calculate " + statistic + " metrics for sensorId " + sensorId);
+            }
+
+            // Create object with statistics to return
+            // Set metrics as doubles to create DTO
+            // Doubles need to be a value to create object
+            SensorAggregationResponseDTO response = new SensorAggregationResponseDTO(
+                    sensorId,
+                    statistic,
+                    temperatureMetric != null ? temperatureMetric : 0.0,
+                    windSpeedMetric != null ? windSpeedMetric : 0.0,
+                    humidityMetric != null ? humidityMetric : 0.0,
+                    startDate,
+                    endDate
+            );
+
+            // Then nulling metrics if not requested
+            if (!temperature) response.setTemperatureMetric(null);
+            if (!humidity) response.setHumidityMetric(null);
+            if (!wind) response.setWindSpeedMetric(null);
+
+            results.add(response);
         }
 
-        // Fields to hold outputs
-        Double temperatureMetric = null;
-        Double humidityMetric = null;
-        Double windSpeedMetric = null;
-
-        // If Temperature true perform calculate function with specific statistic
-        // Creates a list of non-null double values
-        try {
-            if (temperature) {
-                temperatureMetric = calculate(
-                        readings.stream()
-                                .map(SensorReading::getTemperature)
-                                .filter(Objects::nonNull)
-                                .toList(),
-                        statistic
-                );
-            }
-
-            // If Humidity true perform calculate function with specific statistic
-            // Creates a list of non-null double values
-            if (humidity) {
-                humidityMetric = calculate(
-                        readings.stream()
-                                .map(SensorReading::getHumidity)
-                                .filter(Objects::nonNull)
-                                .toList(),
-                        statistic
-                );
-            }
-
-            // If Wind Speed true perform calculate function with specific statistic
-            // Creates a list of non-null double values
-            if (wind) {
-                windSpeedMetric = calculate(
-                        readings.stream()
-                                .map(SensorReading::getWindSpeed)
-                                .filter(Objects::nonNull)
-                                .toList(),
-                        statistic
-                );
-            }
-
-        } catch (SensorExceptions.MetricCalculationException e) {
-            throw new SensorExceptions.MetricCalculationException(
-                    "Failed to calculate " + statistic + " metrics for sensorId " + sensorId);
-        }
-
-
-        // Create object with statistics to return
-        // Set metrics as doubles to create DTO
-        // Doubles need t be a value to create object
-        SensorAggregationResponseDTO response = new SensorAggregationResponseDTO(
-                sensorId,
-                statistic,
-                temperatureMetric != null ? temperatureMetric : 0.0,
-                windSpeedMetric != null ? windSpeedMetric : 0.0,
-                humidityMetric != null ? humidityMetric : 0.0,
-                startDate,
-                endDate
-        );
-
-        // Then nulling metrics if not requested
-        if (!temperature) response.setTemperatureMetric(null);
-        if (!humidity) response.setHumidityMetric(null);
-        if (!wind) response.setWindSpeedMetric(null);
-
-        return response;
+        return results;
     }
 
 
@@ -268,6 +238,7 @@ public class SensorService {
             endDate = LocalDateTime.now();
         }
 
+        // end before start date
         if (endDate.isBefore(startDate)) {
             throw new SensorExceptions.MetricCalculationException(
                     "End date cant be before start date  startDate = " + startDate + " endDate = " + endDate
