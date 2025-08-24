@@ -61,6 +61,11 @@ The service offers many features :
 # Endpoints 
 (Notice exception bubling on failing requests)
 
+Database data : 
+
+<img width="1063" height="139" alt="image" src="https://github.com/user-attachments/assets/798268a1-206e-40a2-9bec-b2a6bc914049" />
+
+
 ## sensors/create-reading/
 - Stores a new sensor reading to database.
   
