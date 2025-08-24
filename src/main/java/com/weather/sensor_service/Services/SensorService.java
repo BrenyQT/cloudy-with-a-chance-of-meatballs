@@ -86,7 +86,7 @@ public class SensorService {
     // Return records for a specific sensor between time periods
     public List<SensorReading> getSensorDataBetweenTimePeriod(Long sensorId, LocalDateTime startDate, LocalDateTime endDate) {
 
-        LocalDateTime[] validatedDates = validateAndNormalizeDates(startDate, endDate);
+        LocalDateTime[] validatedDates = validateAndNormaliseDates(startDate, endDate);
         startDate = validatedDates[0];
         endDate = validatedDates[1];
 
@@ -106,7 +106,7 @@ public class SensorService {
             Long sensorId, boolean temperature, boolean humidity, boolean wind,
             LocalDateTime startDate, LocalDateTime endDate) {
 
-        LocalDateTime[] validatedDates = validateAndNormalizeDates(startDate, endDate);
+        LocalDateTime[] validatedDates = validateAndNormaliseDates(startDate, endDate);
         startDate = validatedDates[0];
         endDate = validatedDates[1];
 
@@ -160,7 +160,7 @@ public class SensorService {
                 case "max" -> values.stream().mapToDouble(Double::doubleValue).max().orElse(Double.NaN);
                 case "sum" -> values.stream().mapToDouble(Double::doubleValue).sum();
                 case "avg" -> values.stream().mapToDouble(Double::doubleValue).average().orElse(Double.NaN);
-                default -> throw new SensorExceptions.MetricCalculationException("Invalid statistic inputted : " + statistic);
+                default -> throw new SensorExceptions.MetricCalculationException("Invalid statistic   : " + statistic);
             };
         } catch (Exception e) {
             throw new SensorExceptions.MetricCalculationException("Cant calculate " + statistic);
@@ -177,7 +177,7 @@ public class SensorService {
             LocalDateTime endDate,
             String statistic) {
 
-        LocalDateTime[] validatedDates = validateAndNormalizeDates(startDate, endDate);
+        LocalDateTime[] validatedDates = validateAndNormaliseDates(startDate, endDate);
         startDate = validatedDates[0];
         endDate = validatedDates[1];
 
@@ -260,7 +260,7 @@ public class SensorService {
 
 
     // Helper function to check integrity of inputted startDate and endDate
-    private LocalDateTime[] validateAndNormalizeDates(LocalDateTime startDate, LocalDateTime endDate) {
+    private LocalDateTime[] validateAndNormaliseDates(LocalDateTime startDate, LocalDateTime endDate) {
         if (startDate == null) {
             startDate = LocalDateTime.of(1970, 1, 1, 0, 0);
         }
