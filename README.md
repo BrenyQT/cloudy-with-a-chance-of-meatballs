@@ -8,6 +8,10 @@ The service offers many features :
 - Retrieve specific metrics for a sensorId between startDate and endDate.
 - Retrieve specific metrics for a list of sensorId's between startDate and endDate using a specific statistic (MAX, MIN, AVG, SUM).
 
+## How to run 
+./gradlew build
+java -jar build/libs/sensor-service-0.0.1-SNAPSHOT.jar
+
 # Architecture
   
   ## Controllers
