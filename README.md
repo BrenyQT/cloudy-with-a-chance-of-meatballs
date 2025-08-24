@@ -1,5 +1,3 @@
-<img width="1387" height="877" alt="image" src="https://github.com/user-attachments/assets/aaa814a7-fa91-4286-8b8f-cda970df0a87" /># Overview 
-
 This is a service which recieves weather data from various sensors which report metrics such as temperature, humidity and windspeed. 
 
 The service offers many features : 
