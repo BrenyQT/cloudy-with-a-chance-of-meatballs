@@ -94,6 +94,19 @@ No records available
 <img width="1391" height="883" alt="image" src="https://github.com/user-attachments/assets/4527e442-f2cf-4f60-a915-c8ae0632ac3d" />
 
 ## sensors/get-metrics-and-time-period-with-constraint/
+
+Happy Path (Multiple Sensors)
+<img width="1387" height="880" alt="image" src="https://github.com/user-attachments/assets/296c87bd-88b7-4362-9653-da3809affe43" />
+
+Happy Path (Single Sensor)
+<img width="1384" height="877" alt="image" src="https://github.com/user-attachments/assets/a4edf616-92a0-4675-a441-dbd5c223a815" />
+
+Only two metrics passed (no statistic)
+<img width="1387" height="880" alt="image" src="https://github.com/user-attachments/assets/e942faad-8a15-4eb2-9843-5ccf066ce14e" />
+
+No statistic or timespan (All time, one metric)
+<img width="1390" height="874" alt="image" src="https://github.com/user-attachments/assets/1e14e7e2-9dc5-47af-b40f-923f875999ba" />
+
 No records available 
 <img width="1389" height="871" alt="image" src="https://github.com/user-attachments/assets/35af7c20-f45b-42d0-8a4b-c9053d0fa6af" />
 
