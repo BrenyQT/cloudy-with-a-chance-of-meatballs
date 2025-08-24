@@ -34,6 +34,10 @@ The service offers many features :
   ## SensorServiceApplicationTests
   - Holds all unit tests for the service.
 
+  ## Database 
+  - PostgreSQL
+  - Spring JPA used to map objects (No SQL Queries)
+
   ## Dependancies 
   - Gradle : Dependancy Manager. 
   - PostgreSQL : Service Database.
