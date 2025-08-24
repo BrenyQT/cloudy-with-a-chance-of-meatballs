@@ -55,7 +55,7 @@ The service offers many features :
 - Enpoint testing to check Happy Path and exception bubbling. 
 
 # Endpoints 
-## /sensors/create-reading/
+## sensors/create-reading/
 - Stores a new sensor reading to database.
   
 Happy Path. 
@@ -67,7 +67,7 @@ No sensorId provided.
 Missing a metric.
   <img width="1390" height="878" alt="image" src="https://github.com/user-attachments/assets/f3c66bca-17f2-4cc1-8880-c4db3d3eb3cd" />
 
-## /sensors/get-all/
+## sensors/get-all/
 - Returns all readings in the database.
 
 Happy Path.
@@ -75,6 +75,25 @@ Happy Path.
 
 No Records in database.
 <img width="1387" height="877" alt="image" src="https://github.com/user-attachments/assets/0c9fe69f-de91-499b-b718-1ca3d31f9c90" />
+
+## sensors/get-metrics-and-time-period/
+- Returns sensorReadings with specific metrics within a time span
+
+Happy Path.
+<img width="1388" height="883" alt="image" src="https://github.com/user-attachments/assets/f9751f18-8b3f-4626-8710-f1aaf582939d" />
+
+One metric selected
+<img width="1388" height="880" alt="image" src="https://github.com/user-attachments/assets/02171855-38a1-4707-aee6-6136025ed4d0" />
+
+No time span selected (All time)
+<img width="1392" height="879" alt="image" src="https://github.com/user-attachments/assets/bc087405-f828-4dc8-aca5-7a50ff9cc4c7" />
+
+No records available
+<img width="1391" height="883" alt="image" src="https://github.com/user-attachments/assets/4527e442-f2cf-4f60-a915-c8ae0632ac3d" />
+
+## sensors/get-metrics-and-time-period-with-constraint/
+No records available 
+<img width="1389" height="871" alt="image" src="https://github.com/user-attachments/assets/35af7c20-f45b-42d0-8a4b-c9053d0fa6af" />
 
 
 
