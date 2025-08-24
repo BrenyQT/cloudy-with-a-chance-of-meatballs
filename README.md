@@ -74,7 +74,7 @@ Missing a metric.
   <img width="1390" height="878" alt="image" src="https://github.com/user-attachments/assets/f3c66bca-17f2-4cc1-8880-c4db3d3eb3cd" />
 
 ## Highlights 
-Lock : Maintains data integrity for concurrent requests 
+Lock : Maintains data integrity for concurrent requests. 
 <img width="628" height="269" alt="image" src="https://github.com/user-attachments/assets/97456d3d-8367-46ee-add5-350dc91ddf01" />
 
 
@@ -88,41 +88,64 @@ No Records in database.
 <img width="1387" height="877" alt="image" src="https://github.com/user-attachments/assets/0c9fe69f-de91-499b-b718-1ca3d31f9c90" />
 
 ## Highlights 
-Uses Spring JPA (No SQL needed)
+Uses Spring JPA (No SQL needed).
 <img width="786" height="258" alt="image" src="https://github.com/user-attachments/assets/512e91a2-8346-480c-b01d-7b5db5107c2b" />
 
 
 ## sensors/get-metrics-and-time-period/
-- Returns sensorReadings with specific metrics within a time span
+- Returns sensorReadings with specific metrics within a time span.
 
 Happy Path.
 <img width="1388" height="883" alt="image" src="https://github.com/user-attachments/assets/f9751f18-8b3f-4626-8710-f1aaf582939d" />
 
-One metric selected
+One metric selected.
 <img width="1388" height="880" alt="image" src="https://github.com/user-attachments/assets/02171855-38a1-4707-aee6-6136025ed4d0" />
 
-No time span selected (All time)
+No time span selected (All time).
 <img width="1392" height="879" alt="image" src="https://github.com/user-attachments/assets/bc087405-f828-4dc8-aca5-7a50ff9cc4c7" />
 
-No records available
+No records available.
 <img width="1391" height="883" alt="image" src="https://github.com/user-attachments/assets/4527e442-f2cf-4f60-a915-c8ae0632ac3d" />
+
+## Highlights 
+
+Retreives all readings between specific time. 
+<img width="1034" height="412" alt="image" src="https://github.com/user-attachments/assets/10aa2da0-6ebd-4bc0-ae47-559519cf530d" />
+
+Returns sensorId selected metrics for specified time period. 
+<img width="1230" height="554" alt="image" src="https://github.com/user-attachments/assets/ec68d5f9-910e-4d9f-a9b9-6d2ad83b3eb4" />
 
 ## sensors/get-metrics-and-time-period-with-constraint/
 
-Happy Path (Multiple Sensors)
+Happy Path (Multiple Sensors).
 <img width="1387" height="880" alt="image" src="https://github.com/user-attachments/assets/296c87bd-88b7-4362-9653-da3809affe43" />
 
-Happy Path (Single Sensor)
+Happy Path (Single Sensor).
 <img width="1384" height="877" alt="image" src="https://github.com/user-attachments/assets/a4edf616-92a0-4675-a441-dbd5c223a815" />
 
-Only two metrics passed (no statistic)
+Only two metrics passed (no statistic).
 <img width="1387" height="880" alt="image" src="https://github.com/user-attachments/assets/e942faad-8a15-4eb2-9843-5ccf066ce14e" />
 
-No statistic or timespan (All time, one metric)
+No statistic or timespan (All time, one metric).
 <img width="1390" height="874" alt="image" src="https://github.com/user-attachments/assets/1e14e7e2-9dc5-47af-b40f-923f875999ba" />
 
-No records available 
+No records available. 
 <img width="1389" height="871" alt="image" src="https://github.com/user-attachments/assets/35af7c20-f45b-42d0-8a4b-c9053d0fa6af" />
+
+## Highlights 
+
+Validates and normalises time.
+<img width="958" height="379" alt="image" src="https://github.com/user-attachments/assets/2e2c9a77-377e-443a-818c-42485a60d633" />
+
+Switch case used to choose which statistic is calculated. 
+<img width="953" height="510" alt="image" src="https://github.com/user-attachments/assets/c37430c2-0b4c-42f4-927f-0c059da5f92c" />
+
+If the metric is set as true, calculate.
+<img width="712" height="822" alt="image" src="https://github.com/user-attachments/assets/f5b3cb6d-5ff7-4d50-9b75-b04b229e9e33" />
+
+
+
+
 
 
 
