@@ -25,7 +25,6 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(body, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-
     // Sensor not found exception response
     @ExceptionHandler(SensorExceptions.SensorNotFoundException.class)
     public ResponseEntity<Map<String, Object>> handleNotFound(SensorExceptions.SensorNotFoundException exception) {
@@ -35,7 +34,6 @@ public class GlobalExceptionHandler {
         body.put("message", exception.getMessage());
         return new ResponseEntity<>(body, HttpStatus.NOT_FOUND);
     }
-
 
     // Calculation error exception response
     @ExceptionHandler(SensorExceptions.MetricCalculationException.class)
