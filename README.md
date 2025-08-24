@@ -11,7 +11,7 @@ The service offers many features :
 - Retrieve specific metrics for a sensorId between startDate and endDate.
 - Retrieve specific metrics for a sensorId between startDate and endDate using a specific statistic (MAX, MIN, AVG, SUM).
 
-  ## Architecture
+  ### Architecture
   
   # Controllers
   - SensorController : Holds all endpoints for service.
