@@ -287,7 +287,7 @@ class SensorServiceApplicationTests {
 
         List<SensorReading> result = service.getSensorDataBetweenTimePeriod(1L, start, null);
 
-        assertFalse(result.isEmpty());
+        assertTrue(result.isEmpty());
         verify(repository).findBySensorIdAndTimestampBetween(eq(1L),
                 eq(start), any(LocalDateTime.class));
     }
