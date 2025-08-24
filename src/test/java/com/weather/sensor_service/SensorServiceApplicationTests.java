@@ -6,7 +6,6 @@ import com.weather.sensor_service.Exceptions.SensorExceptions;
 import com.weather.sensor_service.Repository.SensorReadingRepository;
 import com.weather.sensor_service.Services.SensorService;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -170,33 +169,33 @@ class SensorServiceApplicationTests {
 
         // Only temperature
         List<SensorReading> tempOnly = service.getSpecificSensorMetricsBetweenTimePeriod(1L, true, false, false, start, end);
-        assertEquals(25.0, tempOnly.get(0).getTemperature());
-        assertNull(tempOnly.get(0).getHumidity());
-        assertNull(tempOnly.get(0).getWindSpeed());
+        assertEquals(25.0, tempOnly.getFirst().getTemperature());
+        assertNull(tempOnly.getFirst().getHumidity());
+        assertNull(tempOnly.getFirst().getWindSpeed());
 
         // Only humidity
         List<SensorReading> humidityOnly = service.getSpecificSensorMetricsBetweenTimePeriod(1L, false, true, false, start, end);
-        assertNull(humidityOnly.get(0).getTemperature());
-        assertEquals(50.0, humidityOnly.get(0).getHumidity());
-        assertNull(humidityOnly.get(0).getWindSpeed());
+        assertNull(humidityOnly.getFirst().getTemperature());
+        assertEquals(50.0, humidityOnly.getFirst().getHumidity());
+        assertNull(humidityOnly.getFirst().getWindSpeed());
 
         // Only wind
         List<SensorReading> windOnly = service.getSpecificSensorMetricsBetweenTimePeriod(1L, false, false, true, start, end);
-        assertNull(windOnly.get(0).getTemperature());
-        assertNull(windOnly.get(0).getHumidity());
-        assertEquals(5.0, windOnly.get(0).getWindSpeed());
+        assertNull(windOnly.getFirst().getTemperature());
+        assertNull(windOnly.getFirst().getHumidity());
+        assertEquals(5.0, windOnly.getFirst().getWindSpeed());
 
         // All false
         List<SensorReading> allNull = service.getSpecificSensorMetricsBetweenTimePeriod(1L, false, false, false, start, end);
-        assertNull(allNull.get(0).getTemperature());
-        assertNull(allNull.get(0).getHumidity());
-        assertNull(allNull.get(0).getWindSpeed());
+        assertNull(allNull.getFirst().getTemperature());
+        assertNull(allNull.getFirst().getHumidity());
+        assertNull(allNull.getFirst().getWindSpeed());
 
         // All true
         List<SensorReading> allMetrics = service.getSpecificSensorMetricsBetweenTimePeriod(1L, true, true, true, start, end);
-        assertEquals(25.0, allMetrics.get(0).getTemperature());
-        assertEquals(50.0, allMetrics.get(0).getHumidity());
-        assertEquals(5.0, allMetrics.get(0).getWindSpeed());
+        assertEquals(25.0, allMetrics.getFirst().getTemperature());
+        assertEquals(50.0, allMetrics.getFirst().getHumidity());
+        assertEquals(5.0, allMetrics.getFirst().getWindSpeed());
     }
 
 
@@ -224,19 +223,19 @@ class SensorServiceApplicationTests {
         List<SensorReading> input = Collections.singletonList(reading);
 
         List<SensorReading> tempOnly = service.getSpecificMetrics(input, true, false, false);
-        assertEquals(25.0, tempOnly.get(0).getTemperature());
-        assertNull(tempOnly.get(0).getHumidity());
-        assertNull(tempOnly.get(0).getWindSpeed());
+        assertEquals(25.0, tempOnly.getFirst().getTemperature());
+        assertNull(tempOnly.getFirst().getHumidity());
+        assertNull(tempOnly.getFirst().getWindSpeed());
 
         List<SensorReading> humidityOnly = service.getSpecificMetrics(input, false, true, false);
-        assertNull(humidityOnly.get(0).getTemperature());
-        assertEquals(50.0, humidityOnly.get(0).getHumidity());
-        assertNull(humidityOnly.get(0).getWindSpeed());
+        assertNull(humidityOnly.getFirst().getTemperature());
+        assertEquals(50.0, humidityOnly.getFirst().getHumidity());
+        assertNull(humidityOnly.getFirst().getWindSpeed());
 
         List<SensorReading> windOnly = service.getSpecificMetrics(input, false, false, true);
-        assertNull(windOnly.get(0).getTemperature());
-        assertNull(windOnly.get(0).getHumidity());
-        assertEquals(5.0, windOnly.get(0).getWindSpeed());
+        assertNull(windOnly.getFirst().getTemperature());
+        assertNull(windOnly.getFirst().getHumidity());
+        assertEquals(5.0, windOnly.getFirst().getWindSpeed());
     }
 
     // all metrics flags = true
@@ -246,9 +245,9 @@ class SensorServiceApplicationTests {
         List<SensorReading> input = Collections.singletonList(reading);
 
         List<SensorReading> result = service.getSpecificMetrics(input, true, true, true);
-        assertEquals(25.0, result.get(0).getTemperature());
-        assertEquals(50.0, result.get(0).getHumidity());
-        assertEquals(5.0, result.get(0).getWindSpeed());
+        assertEquals(25.0, result.getFirst().getTemperature());
+        assertEquals(50.0, result.getFirst().getHumidity());
+        assertEquals(5.0, result.getFirst().getWindSpeed());
     }
 
     // all metrics flags = false
@@ -258,9 +257,9 @@ class SensorServiceApplicationTests {
         List<SensorReading> input = Collections.singletonList(reading);
 
         List<SensorReading> result = service.getSpecificMetrics(input, false, false, false);
-        assertNull(result.get(0).getTemperature());
-        assertNull(result.get(0).getHumidity());
-        assertNull(result.get(0).getWindSpeed());
+        assertNull(result.getFirst().getTemperature());
+        assertNull(result.getFirst().getHumidity());
+        assertNull(result.getFirst().getWindSpeed());
     }
 
     // object property missing
@@ -291,9 +290,9 @@ class SensorServiceApplicationTests {
         when(repository.findBySensorIdAndTimestampBetween(eq(11L), any(), any())).thenReturn(Arrays.asList(r1, r2));
 
         List<SensorAggregationResponseDTO> dtos = service.getMetricsAndTimePeriodWithConstraintAndStatistic(
-                Arrays.asList(11L), true, true, true, now.minusDays(1), now, "min");
+                List.of(11L), true, true, true, now.minusDays(1), now, "min");
 
-        SensorAggregationResponseDTO dto = dtos.get(0);
+        SensorAggregationResponseDTO dto = dtos.getFirst();
 
         assertEquals(10.0, dto.getTemperatureMetric());
         assertEquals(20.0, dto.getHumidityMetric());
@@ -309,9 +308,9 @@ class SensorServiceApplicationTests {
         when(repository.findBySensorIdAndTimestampBetween(eq(11L), any(), any())).thenReturn(Arrays.asList(r1, r2));
 
         List<SensorAggregationResponseDTO> dtos = service.getMetricsAndTimePeriodWithConstraintAndStatistic(
-                Arrays.asList(11L), true, true, true, now.minusDays(1), now, "max");
+                List.of(11L), true, true, true, now.minusDays(1), now, "max");
 
-        SensorAggregationResponseDTO dto = dtos.get(0);
+        SensorAggregationResponseDTO dto = dtos.getFirst();
 
         assertEquals(30.0, dto.getTemperatureMetric());
         assertEquals(40.0, dto.getHumidityMetric());
@@ -327,9 +326,9 @@ class SensorServiceApplicationTests {
         when(repository.findBySensorIdAndTimestampBetween(eq(11L), any(), any())).thenReturn(Arrays.asList(r1, r2));
 
         List<SensorAggregationResponseDTO> dtos = service.getMetricsAndTimePeriodWithConstraintAndStatistic(
-                Arrays.asList(11L), true, true, true, now.minusDays(1), now, "sum");
+                List.of(11L), true, true, true, now.minusDays(1), now, "sum");
 
-        SensorAggregationResponseDTO dto = dtos.get(0);
+        SensorAggregationResponseDTO dto = dtos.getFirst();
 
         assertEquals(40.0, dto.getTemperatureMetric());
         assertEquals(60.0, dto.getHumidityMetric());
@@ -345,9 +344,9 @@ class SensorServiceApplicationTests {
         when(repository.findBySensorIdAndTimestampBetween(eq(11L), any(), any())).thenReturn(Arrays.asList(r1, r2));
 
         List<SensorAggregationResponseDTO> dtos = service.getMetricsAndTimePeriodWithConstraintAndStatistic(
-                Arrays.asList(11L), true, true, true, now.minusDays(1), now, "avg");
+                List.of(11L), true, true, true, now.minusDays(1), now, "avg");
 
-        SensorAggregationResponseDTO dto = dtos.get(0);
+        SensorAggregationResponseDTO dto = dtos.getFirst();
 
         assertEquals(20.0, dto.getTemperatureMetric());
         assertEquals(30.0, dto.getHumidityMetric());
@@ -362,7 +361,7 @@ class SensorServiceApplicationTests {
         when(repository.findBySensorIdAndTimestampBetween(eq(11L), any(), any())).thenReturn(Collections.singletonList(r1));
 
         assertThrows(SensorExceptions.MetricCalculationException.class,
-                () -> service.getMetricsAndTimePeriodWithConstraintAndStatistic(Arrays.asList(11L), true, true, true, now.minusDays(1), now, "invalid"));
+                () -> service.getMetricsAndTimePeriodWithConstraintAndStatistic(List.of(11L), true, true, true, now.minusDays(1), now, "invalid"));
     }
 
     // invalid statistics data
@@ -373,7 +372,7 @@ class SensorServiceApplicationTests {
         when(repository.findBySensorIdAndTimestampBetween(eq(11L), any(), any())).thenReturn(Collections.singletonList(r1));
 
         assertThrows(SensorExceptions.MetricCalculationException.class,
-                () -> service.getMetricsAndTimePeriodWithConstraintAndStatistic(Arrays.asList(11L), true, true, true, now.minusDays(1), now, "avg"));
+                () -> service.getMetricsAndTimePeriodWithConstraintAndStatistic(List.of(11L), true, true, true, now.minusDays(1), now, "avg"));
     }
 
     // only temperature flag
@@ -383,8 +382,8 @@ class SensorServiceApplicationTests {
         SensorReading r1 = new SensorReading(1L, 11L, 10.0, 20.0, 5.0, now);
         when(repository.findBySensorIdAndTimestampBetween(eq(11L), any(), any())).thenReturn(Collections.singletonList(r1));
 
-        List<SensorAggregationResponseDTO> dtos = service.getMetricsAndTimePeriodWithConstraintAndStatistic(Arrays.asList(11L), true, false, false, now.minusDays(1), now, "avg");
-        SensorAggregationResponseDTO dto = dtos.get(0);
+        List<SensorAggregationResponseDTO> dtos = service.getMetricsAndTimePeriodWithConstraintAndStatistic(List.of(11L), true, false, false, now.minusDays(1), now, "avg");
+        SensorAggregationResponseDTO dto = dtos.getFirst();
 
         assertNotNull(dto.getTemperatureMetric());
         assertNull(dto.getHumidityMetric());
@@ -398,8 +397,8 @@ class SensorServiceApplicationTests {
         SensorReading r1 = new SensorReading(1L, 11L, 10.0, 20.0, 5.0, now);
         when(repository.findBySensorIdAndTimestampBetween(eq(11L), any(), any())).thenReturn(Collections.singletonList(r1));
 
-        List<SensorAggregationResponseDTO> dtos = service.getMetricsAndTimePeriodWithConstraintAndStatistic(Arrays.asList(11L), false, true, false, now.minusDays(1), now, "avg");
-        SensorAggregationResponseDTO dto = dtos.get(0);
+        List<SensorAggregationResponseDTO> dtos = service.getMetricsAndTimePeriodWithConstraintAndStatistic(List.of(11L), false, true, false, now.minusDays(1), now, "avg");
+        SensorAggregationResponseDTO dto = dtos.getFirst();
 
         assertNull(dto.getTemperatureMetric());
         assertNotNull(dto.getHumidityMetric());
@@ -413,8 +412,8 @@ class SensorServiceApplicationTests {
         SensorReading r1 = new SensorReading(1L, 11L, 10.0, 20.0, 5.0, now);
         when(repository.findBySensorIdAndTimestampBetween(eq(11L), any(), any())).thenReturn(Collections.singletonList(r1));
 
-        List<SensorAggregationResponseDTO> dtos = service.getMetricsAndTimePeriodWithConstraintAndStatistic(Arrays.asList(11L), false, false, true, now.minusDays(1), now, "avg");
-        SensorAggregationResponseDTO dto = dtos.get(0);
+        List<SensorAggregationResponseDTO> dtos = service.getMetricsAndTimePeriodWithConstraintAndStatistic(List.of(11L), false, false, true, now.minusDays(1), now, "avg");
+        SensorAggregationResponseDTO dto = dtos.getFirst();
 
         assertNull(dto.getTemperatureMetric());
         assertNull(dto.getHumidityMetric());
@@ -428,8 +427,8 @@ class SensorServiceApplicationTests {
         SensorReading r1 = new SensorReading(1L, 11L, 10.0, 20.0, 5.0, now);
         when(repository.findBySensorIdAndTimestampBetween(eq(11L), any(), any())).thenReturn(Collections.singletonList(r1));
 
-        List<SensorAggregationResponseDTO> dtos = service.getMetricsAndTimePeriodWithConstraintAndStatistic(Arrays.asList(11L), true, true, false, now.minusDays(1), now, "avg");
-        SensorAggregationResponseDTO dto = dtos.get(0);
+        List<SensorAggregationResponseDTO> dtos = service.getMetricsAndTimePeriodWithConstraintAndStatistic(List.of(11L), true, true, false, now.minusDays(1), now, "avg");
+        SensorAggregationResponseDTO dto = dtos.getFirst();
 
         assertNotNull(dto.getTemperatureMetric());
         assertNotNull(dto.getHumidityMetric());
@@ -443,8 +442,8 @@ class SensorServiceApplicationTests {
         SensorReading r1 = new SensorReading(1L, 11L, 10.0, 20.0, 5.0, now);
         when(repository.findBySensorIdAndTimestampBetween(eq(11L), any(), any())).thenReturn(Collections.singletonList(r1));
 
-        List<SensorAggregationResponseDTO> dtos = service.getMetricsAndTimePeriodWithConstraintAndStatistic(Arrays.asList(11L), true, false, false, now.minusDays(1), now, "avg");
-        SensorAggregationResponseDTO dto = dtos.get(0);
+        List<SensorAggregationResponseDTO> dtos = service.getMetricsAndTimePeriodWithConstraintAndStatistic(List.of(11L), true, false, false, now.minusDays(1), now, "avg");
+        SensorAggregationResponseDTO dto = dtos.getFirst();
 
         assertNotNull(dto.getTemperatureMetric());
         assertNull(dto.getHumidityMetric());
