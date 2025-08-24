@@ -10,6 +10,7 @@ The service offers many features :
 
 ## How to run 
 ./gradlew build
+
 java -jar build/libs/sensor-service-0.0.1-SNAPSHOT.jar
 
 # Architecture
