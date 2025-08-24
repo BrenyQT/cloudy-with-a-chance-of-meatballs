@@ -5,11 +5,8 @@ This is a service which recieves weather data from various sensors which report 
 The service offers many features : 
 - Add a new sensor record to the database.
 - Retrieve all readings for all sensors from the database.
-- Retrieve all readings for a sensorId.
-- Retrieve specific metrics for a sensorId.
-- Retrieve all metrics for a sensorId between startDate and endDate.
 - Retrieve specific metrics for a sensorId between startDate and endDate.
-- Retrieve specific metrics for a sensorId between startDate and endDate using a specific statistic (MAX, MIN, AVG, SUM).
+- Retrieve specific metrics for a list of sensorId's between startDate and endDate using a specific statistic (MAX, MIN, AVG, SUM).
 
 # Architecture
   
@@ -51,7 +48,18 @@ The service offers many features :
 - A PR cannot be merged if pipeline fails.
 
 ## Unit Tests (SensorServiceApplicationTests)
+- Run everytime the project is built (tests servicelayer)
 - Tests setup to test the service layer of the service
 
 ## Postman API Testing 
 - Enpoint testing to check Happy Path and exception bubbling. 
+
+# Endpoints 
+## /sensors/create-reading/
+- Stores a new sensor reading to database
+  <img width="1383" height="873" alt="image" src="https://github.com/user-attachments/assets/7d0cab2c-9efd-4356-9bd7-ef10cf7eb544" />
+  <img width="1390" height="878" alt="image" src="https://github.com/user-attachments/assets/b89baba2-5650-4959-8c12-a03367be1329" />
+  <img width="1390" height="878" alt="image" src="https://github.com/user-attachments/assets/f3c66bca-17f2-4cc1-8880-c4db3d3eb3cd" />
+
+
+
