@@ -87,6 +87,11 @@ Happy Path.
 No Records in database.
 <img width="1387" height="877" alt="image" src="https://github.com/user-attachments/assets/0c9fe69f-de91-499b-b718-1ca3d31f9c90" />
 
+## Highlights 
+Uses Spring JPA (No SQL needed)
+<img width="786" height="258" alt="image" src="https://github.com/user-attachments/assets/512e91a2-8346-480c-b01d-7b5db5107c2b" />
+
+
 ## sensors/get-metrics-and-time-period/
 - Returns sensorReadings with specific metrics within a time span
 
