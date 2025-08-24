@@ -73,6 +73,11 @@ No sensorId provided.
 Missing a metric.
   <img width="1390" height="878" alt="image" src="https://github.com/user-attachments/assets/f3c66bca-17f2-4cc1-8880-c4db3d3eb3cd" />
 
+## Highlights 
+Lock : Maintains data integrity for concurrent requests 
+<img width="628" height="269" alt="image" src="https://github.com/user-attachments/assets/97456d3d-8367-46ee-add5-350dc91ddf01" />
+
+
 ## sensors/get-all/
 - Returns all readings in the database.
 
