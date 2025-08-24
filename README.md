@@ -141,6 +141,7 @@ Switch case used to choose which statistic is calculated.
 <img width="953" height="510" alt="image" src="https://github.com/user-attachments/assets/c37430c2-0b4c-42f4-927f-0c059da5f92c" />
 
 If the metric is set as true, calculate.
+
 <img width="712" height="822" alt="image" src="https://github.com/user-attachments/assets/f5b3cb6d-5ff7-4d50-9b75-b04b229e9e33" />
 
 
