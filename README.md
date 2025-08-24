@@ -36,5 +36,22 @@ The service offers many features :
 
   ## SensorServiceApplicationTests
   - Holds all unit tests for the service.
+
+  ## Dependancies 
+  - Gradle : Dependancy Manager. 
+  - PostgreSQL : Service Database.
+  - H2 : in memory database for unit tests.
+  - Spring boot JPA - Spring boot ORM.
+  - Spring boot WEB - allows me to create RESTful API's
    
-    
+# Testing
+
+## Build and Test Pipeline 
+- Github workflow setup to simulate building and testing the entire service.
+- A PR cannot be merged if pipeline fails.
+
+## Unit Tests (SensorServiceApplicationTests)
+- Tests setup to test the service layer of the service
+
+## Postman API Testing 
+- Enpoint testing to check Happy Path and exception bubbling. 
